@@ -1,0 +1,54 @@
+{
+    "name": "nnjeim/fetch",
+    "description": "Laravel wrapper for Guzzle client",
+    "keywords": [
+        "nnjeim",
+        "http"
+    ],
+    "homepage": "https://github.com/nnjeim/fetch.git",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Najm Njeim",
+            "email": "nnjeim@nnjeim.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "guzzlehttp/guzzle": ">=7.0.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": ">=v4.0.0",
+        "phpunit/phpunit": ">=8.5.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nnjeim\\Fetch\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nnjeim\\Fetch\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nnjeim\\Fetch\\FetchServiceProvider"
+            ],
+            "aliases": {
+                "Fetch": "Nnjeim\\Fetch\\Fetch"
+            }
+        }
+    }
+}
