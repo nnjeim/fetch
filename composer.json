@@ -1,13 +1,10 @@
 {
     "name": "nnjeim/fetch",
     "description": "Laravel wrapper for Guzzle client",
-    "keywords": [
-        "nnjeim",
-        "http"
-    ],
+    "keywords": [ "laravel", "lumen", "http", "guzzle", "requests" ],
     "homepage": "https://github.com/nnjeim/fetch.git",
     "license": "MIT",
-    "type": "library",
+    "type": "laravel-package",
     "authors": [
         {
             "name": "Najm Njeim",
