@@ -2,189 +2,119 @@
 
 namespace Nnjeim\Fetch;
 
-class FetchHelper extends FetchFactory {
+use Nnjeim\Fetch\FetchException;
+use Nnjeim\Fetch\FetchInterface;
+use Nnjeim\Fetch\FetchBuilder;
 
-    /**
-     * @param  array  $headers
-     * @return $this|object
-     */
-    public function setHeaders(array $headers): object {
+class FetchHelper extends FetchBuilder implements FetchInterface
+{
+	/**
+	 * @param  array  $headers
+	 * @return $this
+	 */
+	public function setHeaders(array $headers): self
+	{
+		$this->headers = $headers;
 
-        $this->headers = $headers;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * @param  string|null  $baseUri
+	 * @return $this
+	 */
+	public function setBaseUri(?string $baseUri = null): self
+	{
+		$this->baseUri = rtrim($baseUri, '/') . '/';
 
-    /**
-     * @param  string|null  $baseUri
-     * @return $this|object
-     */
-    public function setBaseUri(?string $baseUri = null): object {
+		return $this;
+	}
 
-        $this->baseUri = rtrim($baseUri, '/') . '/';
+	/**
+	 * @param  string  $method
+	 * @return $this
+	 */
+	public function setMethod(string $method): self
+	{
+		$this->method = $method;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @param  string  $method
-     * @return $this
-     */
-    public function setMethod(string $method): object {
+	/**
+	 * @param  string  $url
+	 * @return $this
+	 */
+	public function setUrl(string $url): self
+	{
+		$this->url = $url;
 
-        $this->method = $method;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * @param  string  $format
+	 * @return $this
+	 */
+	public function setBodyFormat(string $format): self
+	{
+		$this->bodyFormat = $format;
 
-    /**
-     * @param  string  $url
-     * @return $this
-     */
-    public function setUrl(string $url): object {
+		return $this;
+	}
 
-        $this->url = $url;
+	/**
+	 * @return $this
+	 */
+	public function setAsync(): self
+	{
+		$this->async = true;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @param  string  $format
-     * @return $this
-     */
-    public function setBodyFormat(string $format): object {
+	/**
+	 * @return $this
+	 */
+	public function setData(array $data): self
+	{
+		$this->data = $data;
 
-        $this->bodyFormat = $format;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * @param $method
+	 * @param $args
+	 * @return array
+	 * @throws FetchException
+	 */
+	public function __call($method, $args)
+	{
+		$bodyFormats = [
+			'get' => 'query',
+			'post' => 'form_params',
+			'put' => 'form_params',
+			'delete' => 'query',
+			'upload' => 'multipart',
+		];
 
-    /**
-     * @return $this|object
-     */
-    public function setAsync(): object {
+		if (in_array(strtolower($method), array_keys($bodyFormats))) {
 
-        $this->async = true;
+			[$url, $data] = [...$args] + ['', null];
 
-        return $this;
-    }
+			$this->setUrl($url);
 
-    /**
-     * @return $this|object
-     */
-    public function setData(array $data): object {
+			if ($data !== null) {
+				$this->setData($data);
+			}
 
-        $this->data = $data;
+			return $this
+				->setMethod($method)
+				->setBodyFormat($bodyFormats[$method])
+				->fetch();
+		}
 
-        return $this;
-    }
-
-    /**
-     * @param  string  $url
-     * @param  array  $data
-     * @return array
-     */
-    public function get(?string $url = null, ?array $data = null): array {
-
-        if ($url !== null) {
-            $this->setUrl($url);
-        }
-
-        if ($data !== null) {
-            $this->setData($data);
-        }
-
-        return $this
-            ->setMethod('get')
-            ->setBodyFormat('query')
-            ->fetch();
-    }
-
-    /**
-     * @param  string  $url
-     * @param  array  $data
-     * @return array
-     */
-    public function post(?string $url = null, ?array $data = null): array {
-
-        if ($url !== null) {
-            $this->setUrl($url);
-        }
-
-        if ($data !== null) {
-
-            $this->setData($data);
-        }
-
-        return $this
-            ->setMethod('post')
-            ->setBodyFormat('form_params')
-            ->fetch();
-    }
-
-    /**
-     * @param  string  $url
-     * @param  array  $data
-     * @return array
-     */
-    public function put(?string $url = null, ?array $data = null): array {
-
-        if ($url !== null) {
-            $this->setUrl($url);
-        }
-
-        if ($data !== null) {
-
-            $this->setData($data);
-        }
-
-        return $this
-            ->setMethod('put')
-            ->setBodyFormat('form_params')
-            ->fetch();
-    }
-
-    /**
-     * @param  string  $url
-     * @param  array  $data
-     * @return array
-     */
-    public function delete(?string $url = null, ?array $data = null): array {
-
-        if ($url !== null) {
-            $this->setUrl($url);
-        }
-
-        if ($data !== null) {
-
-            $this->setData($data);
-        }
-
-        return $this
-            ->setMethod('delete')
-            ->setBodyFormat('query')
-            ->fetch();
-    }
-
-    /**
-     * @param  string  $url
-     * @param  array  $data
-     * @return array
-     */
-    public function upload(?string $url = null, ?array $data = null): array {
-
-        if ($url !== null) {
-            $this->setUrl($url);
-        }
-
-        if ($data !== null) {
-
-            $this->setData($data);
-        }
-
-        return $this
-            ->setMethod('post')
-            ->setBodyFormat('multipart')
-            ->fetch();
-    }
+		throw FetchException::methodNotFoundException($method);
+	}
 }
