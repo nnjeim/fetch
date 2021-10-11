@@ -91,15 +91,30 @@ class FetchHelper extends FetchBuilder implements FetchInterface
 	 */
 	public function __call($method, $args)
 	{
-		$bodyFormats = [
-			'get' => 'query',
-			'post' => 'form_params',
-			'put' => 'form_params',
-			'delete' => 'query',
-			'upload' => 'multipart',
+		$methods = [
+			'get' => [
+				'bodyFormat' => 'query',
+				'verb' => 'get',
+			],
+			'post' => [
+				'bodyFormat' => 'form_params',
+				'verb' => 'post',
+			],
+			'put' => [
+				'bodyFormat' => 'form_params',
+				'verb' => 'put',
+			],
+			'delete' => [
+				'bodyFormat' => 'query',
+				'verb' => 'delete',
+			],
+			'upload' => [
+				'bodyFormat' => 'multipart',
+				'verb' => 'post',
+			],
 		];
 
-		if (in_array(strtolower($method), array_keys($bodyFormats))) {
+		if (in_array(strtolower($method), array_keys($methods))) {
 
 			[$url, $data] = [...$args] + ['', null];
 
@@ -109,9 +124,11 @@ class FetchHelper extends FetchBuilder implements FetchInterface
 				$this->setData($data);
 			}
 
+			['verb' => $verb, 'bodyFormat' => $bodyFormat] = $methods[strtolower($method)];
+
 			return $this
-				->setMethod($method)
-				->setBodyFormat($bodyFormats[$method])
+				->setMethod($verb)
+				->setBodyFormat($bodyFormat)
 				->fetch();
 		}
 

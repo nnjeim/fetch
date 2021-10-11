@@ -8,3 +8,6 @@ All notable changes will be documented in this file
 ## 1.1.0 - 2021-09-19
 - General refactoring
 - Addition of the FetchInterface class.
+
+## 1.1.1 - 2021-10-11
+- Addition of the upload method.
